@@ -24,13 +24,20 @@
 		<?php echo $form->dropDownList($model,'sports_id', CHtml::listData(Sport::model()->findAll(array('order' => 'SportName ASC')), 'id', 'SportName'), array('empty'=>'Choose Sport',$model->sports_id=>'selected'));  ?>
 		<?php echo $form->error($model,'sports_id'); ?>
 	</div>
+    
+  <div class="row">
+		<?php echo $form->labelEx($model,'category_id'); ?>
+		<?php echo $form->dropDownList($model,'category_id', CHtml::listData(Categories::model()->findAll(array('order' => 'category ASC')), 'id', 'category'), array('empty'=>'Choose Category',$model->category_id=>'selected'));  ?>
+		<?php echo $form->error($model,'category_id'); ?>
+	</div>
 
 	<div class="row">
 		<?php echo $form->labelEx($model,'eventName'); ?>
 		<?php echo $form->textField($model,'eventName',array('size'=>60,'maxlength'=>255)); ?>
 		<?php echo $form->error($model,'eventName'); ?>
 	</div>
-
+    
+  
 	<div class="row">
 		<?php echo $form->labelEx($model,'unitid'); ?>
 		<?php echo $form->dropDownList($model,'unitid', CHtml::listData(Units::model()->findAll(array('order' => 'unitName ASC')), 'id', 'unitName'), array('empty'=>'Choose Unit',$model->unitid=>'selected'));?>

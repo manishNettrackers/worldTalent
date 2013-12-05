@@ -21,8 +21,15 @@ $this->menu=array(
 <?php $this->widget('zii.widgets.CDetailView', array(
 	'data'=>$model,
 	'attributes'=>array(
-		'id',
-		'sports_id',
+		//'id',
+		array(
+				'label'=>'Sports Name',
+				'value'=>$model->sports->SportName,
+			 ),
+		 array(
+			'label'=>'Category Name',
+			'value'=>$model->category->category,
+		 ),
 		'eventName',
 		array(
 				'label'=>'Unit Name',

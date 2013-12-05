@@ -8,11 +8,11 @@
  * @property integer $sports_id
  * @property string $eventName
  * @property integer $unitid
+ * @property integer $category_id
  * @property string $description
  *
  * The followings are the available model relations:
  * @property Sport $sports
- * @property Units $unit
  * @property Scores[] $scores
  */
 class Events extends CActiveRecord
@@ -33,12 +33,12 @@ class Events extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('sports_id, eventName, unitid, description', 'required'),
-			array('sports_id, unitid', 'numerical', 'integerOnly'=>true),
+			array('sports_id, eventName, unitid, category_id', 'required'),
+			array('sports_id, unitid, category_id', 'numerical', 'integerOnly'=>true),
 			array('eventName', 'length', 'max'=>255),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, sports_id, eventName, unitid, description', 'safe', 'on'=>'search'),
+			array('id, sports_id, eventName, unitid, category_id, description', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -53,6 +53,7 @@ class Events extends CActiveRecord
 			'sports' => array(self::BELONGS_TO, 'Sport', 'sports_id'),
 			'unit' => array(self::BELONGS_TO, 'Units', 'unitid'),
 			'scores' => array(self::HAS_MANY, 'Scores', 'event_id'),
+			'category' => array(self::BELONGS_TO, 'Categories', 'category_id'),
 		);
 	}
 
@@ -66,6 +67,7 @@ class Events extends CActiveRecord
 			'sports_id' => 'Sports',
 			'eventName' => 'Event Name',
 			'unitid' => 'Unitid',
+			'category_id' => 'Category',
 			'description' => 'Description',
 		);
 	}
@@ -92,6 +94,7 @@ class Events extends CActiveRecord
 		$criteria->compare('sports_id',$this->sports_id);
 		$criteria->compare('eventName',$this->eventName,true);
 		$criteria->compare('unitid',$this->unitid);
+		$criteria->compare('category_id',$this->category_id);
 		$criteria->compare('description',$this->description,true);
 
 		return new CActiveDataProvider($this, array(

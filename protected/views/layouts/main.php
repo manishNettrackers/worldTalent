@@ -35,6 +35,7 @@
 				array('url'=>Yii::app()->getModule('user')->registrationUrl, 'label'=>Yii::app()->getModule('user')->t("Register"), 'visible'=>Yii::app()->user->isGuest),
 				array('url'=>Yii::app()->getModule('user')->profileUrl, 'label'=>Yii::app()->getModule('user')->t("Profile"), 'visible'=>!Yii::app()->user->isGuest),
 				array('label'=>'Sports', 'url'=>array('/Sport/admin'), 'visible'=>!Yii::app()->user->isGuest),
+				array('label'=>'Categories', 'url'=>array('/categories/admin'), 'visible'=>!Yii::app()->user->isGuest),
 				array('label'=>'Events', 'url'=>array('/events/admin'), 'visible'=>!Yii::app()->user->isGuest),
 				array('label'=>'Units', 'url'=>array('/units/admin'), 'visible'=>!Yii::app()->user->isGuest),
 				array('label'=>'Scores', 'url'=>array('/Scores/admin'), 'visible'=>!Yii::app()->user->isGuest),

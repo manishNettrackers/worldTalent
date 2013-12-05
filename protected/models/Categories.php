@@ -1,29 +1,21 @@
 <?php
 
 /**
- * This is the model class for table "scores".
+ * This is the model class for table "categories".
  *
- * The followings are the available columns in table 'scores':
+ * The followings are the available columns in table 'categories':
  * @property integer $id
- * @property integer $user_id
- * @property integer $event_id
- * @property integer $unit_id
- * @property string $score
- * @property string $dateTime
- * @property string $description
- *
- * The followings are the available model relations:
- * @property Users $user
- * @property Events $event
+ * @property integer $sports_id
+ * @property string $category
  */
-class Scores extends CActiveRecord
+class Categories extends CActiveRecord
 {
 	/**
 	 * @return string the associated database table name
 	 */
 	public function tableName()
 	{
-		return 'scores';
+		return 'categories';
 	}
 
 	/**
@@ -34,13 +26,12 @@ class Scores extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id, event_id, unit_id, score', 'required'),
-			array('user_id, event_id, unit_id', 'numerical', 'integerOnly'=>true),
-			array('score', 'length', 'max'=>255),
-			array('dateTime', 'safe'),
+			array('sports_id, category', 'required'),
+			array('sports_id', 'numerical', 'integerOnly'=>true),
+			array('category', 'length', 'max'=>64),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, user_id, event_id, unit_id, score, dateTime, description', 'safe', 'on'=>'search'),
+			array('id, sports_id, category', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -52,9 +43,7 @@ class Scores extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
-			'event' => array(self::BELONGS_TO, 'Events', 'event_id'),
-			'unit' => array(self::BELONGS_TO, 'Units', 'unit_id'),
+		'sports' => array(self::BELONGS_TO, 'Sport', 'sports_id'),
 		);
 	}
 
@@ -65,12 +54,8 @@ class Scores extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
-			'user_id' => 'User',
-			'event_id' => 'Event',
-			'unit_id' => 'Unit',
-			'score' => 'Score',
-			'dateTime' => 'Date Time',
-			'description' => 'Description',
+			'sports_id' => 'Sports',
+			'category' => 'Category',
 		);
 	}
 
@@ -93,12 +78,8 @@ class Scores extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
-		$criteria->compare('user_id',$this->user_id);
-		$criteria->compare('event_id',$this->event_id);
-		$criteria->compare('unit_id',$this->unit_id);
-		$criteria->compare('score',$this->score,true);
-		$criteria->compare('dateTime',$this->dateTime,true);
-		$criteria->compare('description',$this->description,true);
+		$criteria->compare('sports_id',$this->sports_id);
+		$criteria->compare('category',$this->category,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
@@ -109,7 +90,7 @@ class Scores extends CActiveRecord
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!
 	 * @param string $className active record class name.
-	 * @return Scores the static model class
+	 * @return Categories the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{

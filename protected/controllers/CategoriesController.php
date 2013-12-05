@@ -1,6 +1,6 @@
 <?php
 
-class ScoresController extends Controller
+class CategoriesController extends Controller
 {
 	/**
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
@@ -28,26 +28,21 @@ class ScoresController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view','eventunit'),
+				'actions'=>array('index','view'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update','eventunit'),
+				'actions'=>array('create','update'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete','eventunit'),
+				'actions'=>array('admin','delete'),
 				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
 			),
 		);
-	}
-public function actionEventunit()
-	{
-		$unit=Yii::app()->db->createCommand("select unitName from units u left join events e on u.id=e.unitid where e.id ='".$_REQUEST['id']."' ")->queryRow();
-		echo $unit['unitName'];
 	}
 
 	/**
@@ -67,25 +62,16 @@ public function actionEventunit()
 	 */
 	public function actionCreate()
 	{
-		$model=new Scores;
+		$model=new Categories;
+
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
-		//echo '<pre>';print_r($_POST);die;
-		
-		//$unitDetails=Yii::app()->db->createCommand("select unitid from events where id ='". $_POST['Scores']['event_id']."'")->queryRow();
-		if(isset($_POST['Scores']))
+
+		if(isset($_POST['Categories']))
 		{
-				foreach($_POST['Scores']['score'] as $Scoresval)
-				{
-					$model  = new Scores;
-					$model->attributes=$_POST['Scores'];
-					$model->description=$_POST['Scores']['description'];
-					$model->dateTime=date('Y-m-d H:i:s');
-					$model->score =$Scoresval;
-					$model->save();
-			}
-				$this->redirect(array('admin'));
-			
+			$model->attributes=$_POST['Categories'];
+			if($model->save())
+				$this->redirect(array('view','id'=>$model->id));
 		}
 
 		$this->render('create',array(
@@ -105,9 +91,9 @@ public function actionEventunit()
 		// Uncomment the following line if AJAX validation is needed
 		// $this->performAjaxValidation($model);
 
-		if(isset($_POST['Scores']))
+		if(isset($_POST['Categories']))
 		{
-			$model->attributes=$_POST['Scores'];
+			$model->attributes=$_POST['Categories'];
 			if($model->save())
 				$this->redirect(array('view','id'=>$model->id));
 		}
@@ -136,7 +122,7 @@ public function actionEventunit()
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('Scores');
+		$dataProvider=new CActiveDataProvider('Categories');
 		$this->render('index',array(
 			'dataProvider'=>$dataProvider,
 		));
@@ -147,10 +133,10 @@ public function actionEventunit()
 	 */
 	public function actionAdmin()
 	{
-		$model=new Scores('search');
+		$model=new Categories('search');
 		$model->unsetAttributes();  // clear any default values
-		if(isset($_GET['Scores']))
-			$model->attributes=$_GET['Scores'];
+		if(isset($_GET['Categories']))
+			$model->attributes=$_GET['Categories'];
 
 		$this->render('admin',array(
 			'model'=>$model,
@@ -161,12 +147,12 @@ public function actionEventunit()
 	 * Returns the data model based on the primary key given in the GET variable.
 	 * If the data model is not found, an HTTP exception will be raised.
 	 * @param integer $id the ID of the model to be loaded
-	 * @return Scores the loaded model
+	 * @return Categories the loaded model
 	 * @throws CHttpException
 	 */
 	public function loadModel($id)
 	{
-		$model=Scores::model()->findByPk($id);
+		$model=Categories::model()->findByPk($id);
 		if($model===null)
 			throw new CHttpException(404,'The requested page does not exist.');
 		return $model;
@@ -174,11 +160,11 @@ public function actionEventunit()
 
 	/**
 	 * Performs the AJAX validation.
-	 * @param Scores $model the model to be validated
+	 * @param Categories $model the model to be validated
 	 */
 	protected function performAjaxValidation($model)
 	{
-		if(isset($_POST['ajax']) && $_POST['ajax']==='scores-form')
+		if(isset($_POST['ajax']) && $_POST['ajax']==='categories-form')
 		{
 			echo CActiveForm::validate($model);
 			Yii::app()->end();

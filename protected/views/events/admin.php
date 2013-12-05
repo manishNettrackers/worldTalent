@@ -54,6 +54,11 @@ or <b>=</b>) at the beginning of each of your search values to specify how the c
 		'eventName',
 		//'numberOfTries',
 		array(
+            'header'=>'Category Name',
+            'type'=>'html',
+            'value'=>'$data->category->category',
+        ),
+		array(
             'header'=>'UnitName',
             'type'=>'html',
             'value'=>'$data->unit->unitName',

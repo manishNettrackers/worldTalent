@@ -7,7 +7,6 @@
  * @property integer $id
  * @property integer $user_id
  * @property integer $event_id
- * @property integer $unit_id
  * @property string $score
  * @property string $dateTime
  * @property string $description
@@ -34,13 +33,13 @@ class Scores extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('user_id, event_id, unit_id, score', 'required'),
-			array('user_id, event_id, unit_id', 'numerical', 'integerOnly'=>true),
+			array('user_id, event_id, score', 'required'),
+			array('user_id, event_id', 'numerical', 'integerOnly'=>true),
 			array('score', 'length', 'max'=>255),
 			array('dateTime', 'safe'),
 			// The following rule is used by search().
 			// @todo Please remove those attributes that should not be searched.
-			array('id, user_id, event_id, unit_id, score, dateTime, description', 'safe', 'on'=>'search'),
+			array('id, user_id, event_id, score, dateTime, description', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -54,7 +53,6 @@ class Scores extends CActiveRecord
 		return array(
 			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 			'event' => array(self::BELONGS_TO, 'Events', 'event_id'),
-			'unit' => array(self::BELONGS_TO, 'Units', 'unit_id'),
 		);
 	}
 
@@ -67,7 +65,6 @@ class Scores extends CActiveRecord
 			'id' => 'ID',
 			'user_id' => 'User',
 			'event_id' => 'Event',
-			'unit_id' => 'Unit',
 			'score' => 'Score',
 			'dateTime' => 'Date Time',
 			'description' => 'Description',
@@ -95,7 +92,6 @@ class Scores extends CActiveRecord
 		$criteria->compare('id',$this->id);
 		$criteria->compare('user_id',$this->user_id);
 		$criteria->compare('event_id',$this->event_id);
-		$criteria->compare('unit_id',$this->unit_id);
 		$criteria->compare('score',$this->score,true);
 		$criteria->compare('dateTime',$this->dateTime,true);
 		$criteria->compare('description',$this->description,true);
