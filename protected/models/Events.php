@@ -17,6 +17,13 @@
  */
 class Events extends CActiveRecord
 {
+	public $user_id;
+	public $category_id;
+	public $event_id;
+	public $unit_id;
+	public $score;
+	public $dateTime;
+	public $description;
 	/**
 	 * @return string the associated database table name
 	 */
@@ -87,7 +94,6 @@ class Events extends CActiveRecord
 	public function search()
 	{
 		// @todo Please modify the following code to remove attributes that should not be searched.
-
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
@@ -101,7 +107,19 @@ class Events extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
-
+	
+	public function scoresearch()
+		{
+			//SELECT `s`.* FROM `events` `e` left join `scores` `s` on `s`.`event_id`=`e`.`id` WHERE `e`.`id`=1
+			$criteria=new CDbCriteria;
+			$criteria->select=array('s.user_id as user_id,s.category_id as category_id,s.event_id as event_id,s.unit_id as unit_id,s.score as score,s.dateTime as dateTime,s.description as description');
+			$criteria->join="Left JOIN scores s on s.event_id = t.id";
+			$criteria->condition='t.id='.$_REQUEST['id'];
+			
+			return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+		}
 	/**
 	 * Returns the static model of the specified AR class.
 	 * Please note that you should have this exact method in all your CActiveRecord descendants!

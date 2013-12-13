@@ -9,6 +9,7 @@ class LoginController extends Controller
 	 */
 	public function actionLogin()
 	{
+		$this->layout='//layouts/log_in';
 		if (Yii::app()->user->isGuest) {
 			$model=new UserLogin;
 			// collect user input data
@@ -18,10 +19,12 @@ class LoginController extends Controller
 				// validate user input and redirect to previous page if valid
 				if($model->validate()) {
 					$this->lastViset();
-					if (Yii::app()->user->returnUrl=='/index.php')
-						$this->redirect(Yii::app()->controller->module->returnUrl);
-					else
-						$this->redirect(Yii::app()->user->returnUrl);
+					$loginuser=Yii::app()->db->createCommand("select itemname from AuthAssignment where userid='".Yii::app()->user->id."'")->queryRow();
+					//echo $loginuser['itemname'];die;
+					if($loginuser['itemname']=='Admin')
+						$this->redirect(array("/user/admin"));
+					elseif($loginuser['itemname']=='Subscriber')
+						$this->redirect(array("/user/user/index"));
 				}
 			}
 			// display the login form

@@ -3,7 +3,7 @@
 class AdminController extends Controller
 {
 	public $defaultAction = 'admin';
-	public $layout='//layouts/column2';
+	public $layout='//layouts/mainpage';
 	
 	private $_model;
 
@@ -20,7 +20,7 @@ class AdminController extends Controller
 	 * Specifies the access control rules.
 	 * This method is used by the 'accessControl' filter.
 	 * @return array access control rules
-	 */
+	 
 	public function accessRules()
 	{
 		return array(
@@ -28,11 +28,15 @@ class AdminController extends Controller
 				'actions'=>array('admin','delete','create','update','view'),
 				'users'=>UserModule::getAdmins(),
 			),
+			array('allow', // allow admin user to perform 'admin' and 'delete' actions
+				'actions'=>array('admin','delete','create','update','view'),
+				'users'=>array('*'),
+			),
 			array('deny',  // deny all users
 				'users'=>array('*'),
 			),
 		);
-	}
+	}*/
 	/**
 	 * Manages all models.
 	 */
@@ -63,10 +67,28 @@ class AdminController extends Controller
 	 */
 	public function actionView()
 	{
-		$model = $this->loadModel();
-		$this->render('view',array(
-			'model'=>$model,
-		));
+		$model = $this->loadUser();
+		$totalevent=array();
+		$CatrgoryDetails=Yii::app()->db->createCommand("select c.category as category ,s.* from scores s left join categories c on c.id=s.category_id where user_id='".$_REQUEST['id']."' group by category_id")->queryAll();
+		
+		foreach($CatrgoryDetails as $CatrgoryDetailsval)
+		{
+			$EventDetails=Yii::app()->db->createCommand("select AVG(s.score) as scores,u.unitName as unitname,e.eventName as event,s.* from scores s left join events e on e.id=s.event_id left join units u on u.id=s.unit_id where s.user_id='".$_REQUEST['id']."' and s.category_id='".$CatrgoryDetailsval['category_id']."' group by s.event_id")->queryAll();
+			foreach($EventDetails as $EventDetailsval)
+			{
+				$catName=$CatrgoryDetailsval['category'];
+				$totalevent[$catName][]=array(
+				'category_id'=>$EventDetailsval['category_id'],
+				'unitname'=>$EventDetailsval['unitname'],
+				'event_id'=>$EventDetailsval['event_id'],
+				'event'=>$EventDetailsval['event'],
+				'score'=>$EventDetailsval['scores']
+				);
+			}
+		}
+		//echo '<pre>';print_r($totalevent);die;
+		//$model = $this->loadModel();
+		$this->render('view',array('model'=>$model,'totalevent'=>$totalevent,'CatrgoryDetails'=>$CatrgoryDetails));
 	}
 
 	/**
@@ -180,6 +202,22 @@ class AdminController extends Controller
 				$this->_model=User::model()->notsafe()->findbyPk($_GET['id']);
 			if($this->_model===null)
 				throw new CHttpException(404,'The requested page does not exist.');
+		}
+		return $this->_model;
+	}
+	/**
+	 * Returns the data model based on the primary key given in the GET variable.
+	 * If the data model is not found, an HTTP exception will be raised.
+	 * @param integer the primary key value. Defaults to null, meaning using the 'id' GET variable
+	 */
+	public function loadUser()
+	{
+		if($this->_model===null)
+		{
+			if(Yii::app()->user->id)
+				$this->_model=Yii::app()->controller->module->user();
+			if($this->_model===null)
+				$this->redirect(Yii::app()->controller->module->loginUrl);
 		}
 		return $this->_model;
 	}

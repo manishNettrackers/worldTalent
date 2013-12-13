@@ -3,7 +3,7 @@
 class RegistrationController extends Controller
 {
 	public $defaultAction = 'registration';
-	
+	public $layout='//layouts/log_in';
 	/**
 	 * Declares class-based actions.
 	 */
@@ -20,10 +20,12 @@ class RegistrationController extends Controller
 	 * Registration user
 	 */
 	public function actionRegistration() {
+		
             $model = new RegistrationForm;
             $profile=new Profile;
             $profile->regMode = true;
-            
+            $gallerymodel = new Gallery;
+			//echo '<pre>';print_r($_POST);die;
 			// ajax validator
 			if(isset($_POST['ajax']) && $_POST['ajax']==='registration-form')
 			{
@@ -47,6 +49,22 @@ class RegistrationController extends Controller
 						$model->status=((Yii::app()->controller->module->activeAfterRegister)?User::STATUS_ACTIVE:User::STATUS_NOACTIVE);
 						
 						if ($model->save()) {
+							
+							if(isset($_POST['Gallery']))
+							{
+								$gallerymodel = new Gallery;
+								$rnd = rand(0,9999);  
+								
+								$uploadedFile=CUploadedFile::getInstance($gallerymodel,'image');
+								$fileName = "{$rnd}-{$uploadedFile}";  // random number + file name
+								$gallerymodel->userid =$model->id;
+								$gallerymodel->image = $fileName;
+								if($gallerymodel->save())
+								{
+   										$uploadedFile->saveAs(Yii::app()->basePath.'/banner/'.$fileName);  
+									// redirect to success page
+								}
+							}
 							$profile->user_id=$model->id;
 							$profile->save();
 							if (Yii::app()->controller->module->sendActivationMail) {

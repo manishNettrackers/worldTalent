@@ -77,7 +77,7 @@ class RightsModule extends CWebModule
 	/**
 	* @property string the path to the application layout file.
 	*/
-	public $appLayout = 'application.views.layouts.main';
+	public $appLayout = '//layouts/mainpage';
 	/**
 	* @property string the style sheet file to use for Rights.
 	*/

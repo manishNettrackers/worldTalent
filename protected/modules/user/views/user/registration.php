@@ -27,31 +27,45 @@ $this->breadcrumbs=array(
 	
 	<?php echo $form->errorSummary(array($model,$profile)); ?>
 	
-	<div class="row">
-	<?php echo $form->labelEx($model,'username'); ?>
-	<?php echo $form->textField($model,'username'); ?>
+	<div class="form-group">
+	<?php echo $form->labelEx($model,'username',array('class'=>"control-label visible-ie8 visible-ie9")); ?>
+    <div class="input-icon">
+					<i class="fa fa-user"></i>
+	<?php echo $form->textField($model,'username',array('class'=>"form-control placeholder-no-fix",'placeholder'=>"Username")); ?>
 	<?php echo $form->error($model,'username'); ?>
+    </div>
 	</div>
 	
-	<div class="row">
-	<?php echo $form->labelEx($model,'password'); ?>
-	<?php echo $form->passwordField($model,'password'); ?>
+	<div class="form-group">
+	<?php echo $form->labelEx($model,'password',array('class'=>"control-label visible-ie8 visible-ie9")); ?>
+    <div class="input-icon">
+					<i class="fa fa-lock"></i>
+	<?php echo $form->passwordField($model,'password',array('class'=>"form-control placeholder-no-fix",'placeholder'=>"Password")); ?>
 	<?php echo $form->error($model,'password'); ?>
+    </div>
 	<p class="hint">
 	<?php echo UserModule::t("Minimal password length 4 symbols."); ?>
 	</p>
 	</div>
 	
-	<div class="row">
-	<?php echo $form->labelEx($model,'verifyPassword'); ?>
-	<?php echo $form->passwordField($model,'verifyPassword'); ?>
+	<div class="form-group">
+	<?php echo $form->labelEx($model,'verifyPassword',array('class'=>"control-label visible-ie8 visible-ie9")); ?>
+   <div class="controls">
+					<div class="input-icon">
+						<i class="fa fa-check"></i>
+	<?php echo $form->passwordField($model,'verifyPassword',array('class'=>"form-control placeholder-no-fix",'placeholder'=>"Re-type Your Password")); ?>
 	<?php echo $form->error($model,'verifyPassword'); ?>
+    </div>
 	</div>
+    </div>
 	
-	<div class="row">
-	<?php echo $form->labelEx($model,'email'); ?>
-	<?php echo $form->textField($model,'email'); ?>
+	<div class="form-group">
+	<?php echo $form->labelEx($model,'email',array('class'=>'control-label visible-ie8 visible-ie9')); ?>
+    <div class="input-icon">
+					<i class="fa fa-envelope"></i>
+	<?php echo $form->textField($model,'email',array('placeholder'=>"Email" ,'class'=>'form-control placeholder-no-fix')); ?>
 	<?php echo $form->error($model,'email'); ?>
+    </div>
 	</div>
 	
 <?php 
@@ -62,14 +76,14 @@ $this->breadcrumbs=array(
 	<div class="row">
 		<?php echo $form->labelEx($profile,$field->varname); ?>
 		<?php 
-		if ($widgetEdit = $field->widgetEdit($profile)) {
+		if ($widgetEdit = $field->widgetEdit($profile,array('class'=>'form-control'))) {
 			echo $widgetEdit;
 		} elseif ($field->range) {
 			echo $form->dropDownList($profile,$field->varname,Profile::range($field->range));
 		} elseif ($field->field_type=="TEXT") {
 			echo$form->textArea($profile,$field->varname,array('rows'=>6, 'cols'=>50));
 		} else {
-			echo $form->textField($profile,$field->varname,array('size'=>60,'maxlength'=>(($field->field_size)?$field->field_size:255)));
+			echo $form->textField($profile,$field->varname,array('size'=>60,'class'=>'form-control','maxlength'=>(($field->field_size)?$field->field_size:255)));
 		}
 		 ?>
 		<?php echo $form->error($profile,$field->varname); ?>
@@ -79,20 +93,26 @@ $this->breadcrumbs=array(
 		}
 ?>
 	<?php if (UserModule::doCaptcha('registration')): ?>
-	<div class="row">
-		<?php echo $form->labelEx($model,'verifyCode'); ?>
+	<div class="form-group">
+		<?php echo $form->labelEx($model,'verifyCode',array('class'=>'control-label visible-ie8 visible-ie9')); ?>
 		
 		<?php $this->widget('CCaptcha'); ?>
-		<?php echo $form->textField($model,'verifyCode'); ?>
+        <div class="input-icon">
+					<i class="fa fa-check"></i>
+		<?php echo $form->textField($model,'verifyCode',array('placeholder'=>"Enter text" ,'class'=>'form-control placeholder-no-fix')); ?>
 		<?php echo $form->error($model,'verifyCode'); ?>
-		
+		</div>
 		<p class="hint"><?php echo UserModule::t("Please enter the letters as they are shown in the image above."); ?>
 		<br/><?php echo UserModule::t("Letters are not case-sensitive."); ?></p>
 	</div>
 	<?php endif; ?>
 	
-	<div class="row submit">
-		<?php echo CHtml::submitButton(UserModule::t("Register")); ?>
+	<div class="form-actions">
+   		<a href="<?php echo Yii::app()->request->baseUrl; ?>/user/login">
+       		 <button id="register-back-btn" type="button" class="btn"><i class="m-icon-swapleft"></i>Back</button>
+        </a>
+		<?php echo CHtml::submitButton(UserModule::t("Register"),array( 'class'=>"btn green pull-right")); ?>
+        <i class="m-icon-swapright m-icon-white"></i>
 	</div>
 
 <?php $this->endWidget(); ?>

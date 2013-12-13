@@ -8,49 +8,56 @@ $this->menu=array(
 		:array()),
     array('label'=>UserModule::t('List User'), 'url'=>array('/user')),
     array('label'=>UserModule::t('Edit'), 'url'=>array('edit')),
-    array('label'=>UserModule::t('Change password'), 'url'=>array('changepassword')),
-    array('label'=>UserModule::t('Logout'), 'url'=>array('/user/logout')),
 );
-?><h1><?php echo UserModule::t('Your profile'); ?></h1>
+?><h1><?php echo ucfirst(Yii::app()->user->name) .' profile';?></h1>
 
 <?php if(Yii::app()->user->hasFlash('profileMessage')): ?>
 <div class="success">
 	<?php echo Yii::app()->user->getFlash('profileMessage'); ?>
 </div>
 <?php endif; ?>
-<table class="dataGrid">
-	<tr>
-		<th class="label"><?php echo CHtml::encode($model->getAttributeLabel('username')); ?></th>
-	    <td><?php echo CHtml::encode($model->username); ?></td>
-	</tr>
-	<?php 
-		$profileFields=ProfileField::model()->forOwner()->sort()->findAll();
-		if ($profileFields) {
-			foreach($profileFields as $field) {
-				//echo "<pre>"; print_r($profile); die();
-			?>
-	<tr>
-		<th class="label"><?php echo CHtml::encode(UserModule::t($field->title)); ?></th>
-    	<td><?php echo (($field->widgetView($profile))?$field->widgetView($profile):CHtml::encode((($field->range)?Profile::range($field->range,$profile->getAttribute($field->varname)):$profile->getAttribute($field->varname)))); ?></td>
-	</tr>
-			<?php
-			}//$profile->getAttribute($field->varname)
-		}
-	?>
-	<tr>
-		<th class="label"><?php echo CHtml::encode($model->getAttributeLabel('email')); ?></th>
-    	<td><?php echo CHtml::encode($model->email); ?></td>
-	</tr>
-	<tr>
-		<th class="label"><?php echo CHtml::encode($model->getAttributeLabel('create_at')); ?></th>
-    	<td><?php echo $model->create_at; ?></td>
-	</tr>
-	<tr>
-		<th class="label"><?php echo CHtml::encode($model->getAttributeLabel('lastvisit_at')); ?></th>
-    	<td><?php echo $model->lastvisit_at; ?></td>
-	</tr>
-	<tr>
-		<th class="label"><?php echo CHtml::encode($model->getAttributeLabel('status')); ?></th>
-    	<td><?php echo CHtml::encode(User::itemAlias("UserStatus",$model->status)); ?></td>
-	</tr>
-</table>
+
+<div class="col-md-9">
+<div class="tab-content">
+    <div id="tab_1-1" class="tab-pane active">
+			
+            <div class="form-group">
+               <label class="control-label">User Name</label>
+                <input type="text" class="form-control" value="<?php echo $model->username?>"  disabled="disabled" />
+            </div>
+            <?php 
+                $profileFields=ProfileField::model()->forOwner()->sort()->findAll();
+                if ($profileFields) {
+                    foreach($profileFields as $field) {
+                    ?>
+            
+            		<div class="form-group">
+                       <label class="control-label"><?php echo CHtml::encode(UserModule::t($field->title)); ?></label>
+                       <input type="text" class="form-control" value="<?php echo $profile->getAttribute($field->varname);?>" disabled="disabled" />
+                        <?php //echo $profile->getAttribute($field->varname);
+						 //(($field->widgetView($profile,array('class'=>"form-control")))?$field->widgetView($profile):CHtml::encode((($field->range)?Profile::range($field->range,$profile->getAttribute($field->varname)):$profile->getAttribute($field->varname)))); ?>
+                    </div>
+                    <?php
+                    }
+                }
+            ?>
+            
+            <div class="form-group">
+                <label class="control-label">E-Mail</label>
+                <input type="text" class="form-control" value="<?php echo $model->email?>"  disabled="disabled" />
+            </div>
+             <div class="form-group">
+                <label class="control-label">Registration date </label>
+                <input type="text" class="form-control" value=<?php echo $model->create_at; ?>  disabled="disabled" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Last visit </label>
+                <input type="text" class="form-control" value="<?php echo $model->lastvisit_at?>"  disabled="disabled"  />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Status </label>
+                <input type="text" class="form-control" value="<?php echo CHtml::encode(User::itemAlias("UserStatus",$model->status));?>"  disabled="disabled"  />
+            </div>
+    </div>
+</div>
+</div>

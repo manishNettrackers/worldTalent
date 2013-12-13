@@ -3,48 +3,48 @@
 /* @var $model Scores */
 /* @var $form CActiveForm */
 ?>
-<script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.min.js"></script>
-<script
-	type="text/javascript"
-	src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.tablednd_0_5.js"></script>
+<!--<script src="<?php echo Yii::app()->request->baseUrl; ?>/css/2014/plugins/jquery-1.10.2.min.js" type="text/javascript"></script>
+--><script type="text/javascript" src="<?php echo Yii::app()->request->baseUrl; ?>/js/jquery.tablednd_0_5.js"></script>
 
 <script>
 
 $(document).ready(function() {
-  $("#event").change(function(){
-	 var eventval=$('#event').val();
-	 $.ajax({
-		 url: "<?php echo $this->createUrl('/scores/eventunit'); ?>/"+eventval,
-		 type : 'get',
-		 data : {},
-		 success: function(data){
-			 if(data=='times')
-			 {
-				$('.placeholder').html('No of times');
-				$('.placeholder1').html('No of times');
-				$('#unitval').val('No of times');
-			 }
-			else if(data=='second(s)')
-			{
-				$('.placeholder').html('seconds');
-				$('.placeholder1').html('seconds');
-				$('#unitval').val('seconds');
-			}
-			else if(data=='km/hour')
-			{
-				$('.placeholder').html('km/hour');
-				$('.placeholder1').html('km/hour');
-				$('#unitval').val('km/hour');
-			}
-		}
-		 });
+	
+	  $("#Scores_category_id").live('change',function(){
+	 var categoryval=$('#Scores_category_id').val();
+	
+			 $.ajax({
+				 url: "<?php echo $this->createUrl('/scores/dynamicevent'); ?>",
+				 type : 'post',
+				 dataType:"json",
+				 data : {categoryval:categoryval},
+				 success: function(jsondata){
+					 $('#Scores_event_id').html(jsondata.data);
+					 $('.placeholder').html(jsondata.eventname);
+				}
+				 });
+  });
+	  	  
+  $("#Scores_event_id").live('change',function(){
+	 var eventval=$('#Scores_event_id').val();
+	
+			 $.ajax({
+				 url: "<?php echo $this->createUrl('/scores/eventunitname'); ?>",
+				 type : 'post',
+				 data : {eventval:eventval},
+				 success: function(data){
+						$('.placeholder').html(data);
+						$('.placeholder1').html(data);
+						$('#unitval').val(data);
+				}
+				 });
   });
   // Initialise the table
     $("#table-1").tableDnD();
 });
 function clickEvent(obj)
 {
-  	$(obj).parent().parent().after('<tr class="eventlist1"><td><input type="text" name="Scores[score][]"  class="textbox"/><p class="placeholder1"></p></td><td class="special addbtn"><a href="javascript:void(0)" onclick="clickEvent(this)" class="addone" style="text-decoration: none;">Add Score</a>&nbsp;&nbsp;&nbsp;<a href="#" class="removeme" onclick="removeEvent(this)" style="text-decoration: none;">Delete</a></td></tr>');
+  	$(obj).parent().parent().after('<tr class="eventlist1"><td><input type="text" name="Scores[score][]"  class="textbox form-control"/><p class="placeholder1"></p></td><td class="special addbtn"><a href="javascript:void(0)" onclick="clickEvent(this)" class="addone" style="text-decoration: none;">Add Score</a>&nbsp;&nbsp;&nbsp;<a href="#" class="removeme" onclick="removeEvent(this)" style="text-decoration: none;">Delete</a></td></tr>');
  var texboxval=$('.placeholder').html();
  $('.placeholder1').html(texboxval);
  $('#unitval').val(texboxval);
@@ -65,7 +65,8 @@ $(document).ready(function() {
     $("#table-1").tableDnD();
 });
 </script>
-<div class="form">
+<div class="col-md-8">
+<div class="portlet-body form">
 
 <?php $form=$this->beginWidget('CActiveForm', array(
 	'id'=>'scores-form',
@@ -80,20 +81,48 @@ $(document).ready(function() {
 
 	<?php echo $form->errorSummary($model); ?>
 
-	<div class="row">
+	<div class="form-group">
 		<?php echo $form->labelEx($model,'user_id'); ?>
-		<?php echo $form->dropDownList($model, 'user_id', CHtml::listData(User::model()->findAll(), 'id', 'username'),array('empty'=>'Choose User','options' => array($model->user_id=>array('selected'=>true)))); ?>
+		<?php echo $form->dropDownList($model, 'user_id', CHtml::listData(User::model()->findAll(), 'id', 'username'),array('empty'=>'Choose User','class'=>"form-control input-lg",'options' => array($model->user_id=>array('selected'=>true)))); ?>
 		<?php echo $form->error($model,'user_id'); ?>
 	</div>
-
-	<div class="row">
+    <?php if($model->isNewRecord) {?>
+	<div class="form-group">
+		<?php echo $form->labelEx($model,'category_id'); ?>
+		<?php echo $form->DropDownList($model,'category_id',CHtml::listData(Categories::model()->findAll(array('order' => 'category ASC')), 'id', 'category'),
+                 array('empty'=>'Choose Category',$model->category_id=>'selected','class'=>"form-control input-lg"));?>
+        
+		<?php echo $form->error($model,'category_id'); ?>
+	</div>
+    
+	<div class="form-group">
 		<?php echo $form->labelEx($model,'event_id'); ?>
-		<?php echo $form->dropDownList($model, 'event_id', CHtml::listData(Events::model()->findAll(), 'id', 'eventName'),array('empty'=>'Choose Event','id'=>'event','options' => array($model->event_id=>array('selected'=>true))));?>
+		<?php echo $form->dropDownList($model, 'event_id',array(),array('empty'=>'Choose Event','class'=>"form-control input-lg",'options' => array('empty'=>'Choose Category',$model->event_id=>array('selected'=>true))));
+		?>
+		<?php echo $form->error($model,'event_id'); ?>
+	</div>
+    <?php }else{?>
+    
+    <div class="form-group">
+		<?php echo $form->labelEx($model,'category_id'); ?>
+		<?php echo $form->DropDownList($model,'category_id',CHtml::listData(Categories::model()->findAll(array('order' => 'category ASC')), 'id', 'category'),
+                 array('empty'=>'Choose Category','class'=>"form-control input-lg",$model->category_id=>'selected'));?>
+        
+		<?php echo $form->error($model,'category_id'); ?>
+	</div>
+    
+	<div class="form-group">
+		<?php echo $form->labelEx($model,'event_id'); ?>
+		<?php echo $form->dropDownList($model, 'event_id',CHtml::listData(Events::model()->findAll("category_id='".$model->category_id."'",array('order' => 'eventName ASC')), 'id', 'eventName'),array('empty'=>'Choose Event','class'=>"form-control input-lg",'options' => array('empty'=>'Choose Category',$model->event_id=>array('selected'=>true))));
+		?>
 		<?php echo $form->error($model,'event_id'); ?>
 	</div>
     
+    
+    <?php }?>
+    
 	<?php if($model->isNewRecord) {?>
-    <div class="row">
+    <div class="form-group">
          <table border="0" id="table-1" cellspacing="5">
 			<tr class="eventlist">
 				<td >
@@ -102,7 +131,7 @@ $(document).ready(function() {
                 </tr>
                 <tr>
 				<td>
-					<?php echo $form->textField($model,'score[]',array('class'=>'textbox')); ?>
+					<?php echo $form->textField($model,'score[]',array('class'=>'textbox form-control')); ?>
                 <p class="placeholder"></p>
                 </td>
                 
@@ -115,35 +144,26 @@ $(document).ready(function() {
         </div>
         <?php echo $form->hiddenField($model,'score1',array('value'=>'','id'=>'unitval'));?>
         <?php }else{?>
-        <div class="row">
+        <div class="form-group">
        		 <?php echo $form->labelEx($model,'score'); ?>
-			 <?php echo $form->textField($model,'score',array('class'=>'textbox')); ?>
+			 <?php echo $form->textField($model,'score',array('class'=>'textbox form-control')); ?>
         	 <?php echo $form->error($model,'score'); ?>
+             <p class="placeholder"></p>
 		</div>
         <?php }?>
-      
-       <div class="row">
-		<?php echo $form->labelEx($model,'unit_id'); ?>
-		<?php echo $form->dropDownList($model, 'unit_id', CHtml::listData(Units::model()->findAll(), 'id', 'unitName'),array('empty'=>'Choose Unit','id'=>'event','options' => array($model->unit_id=>array('selected'=>true))));?>
-		<?php echo $form->error($model,'unit_id'); ?>
-	</div>
-    
-	<!--<div class="row">
-		<?php echo $form->labelEx($model,'dateTime'); ?>
-		<?php echo $form->textField($model,'dateTime'); ?>
-		<?php echo $form->error($model,'dateTime'); ?>
-	</div>-->
 
-	<div class="row">
+	<div class="form-group">
 		<?php echo $form->labelEx($model,'description'); ?>
-		<?php echo $form->textArea($model,'description',array('rows'=>6, 'cols'=>50)); ?>
+		<?php echo $form->textArea($model,'description',array('rows'=>6, 'cols'=>50,'class'=>"form-control")); ?>
 		<?php echo $form->error($model,'description'); ?>
 	</div>
 
-	<div class="row buttons">
-		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save'); ?>
+	<div class="form-actions">
+		<?php echo CHtml::submitButton($model->isNewRecord ? 'Create' : 'Save',array( 'class'=>"btn green pull-right")); ?>
+        <i class="m-icon-swapright m-icon-white"></i>
 	</div>
 
 <?php $this->endWidget(); ?>
 
+</div>
 </div><!-- form -->

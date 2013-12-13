@@ -31,7 +31,16 @@ $this->menu=array(
 				'label'=>'Event Name',
 				'value'=>$model->event->eventName,
 			 ),
+	 array(
+		'label'=>'Category Name',
+		'value'=>$model->category->category,
+	 ),
 		'score',
+		array(
+		'label'=>'Unit Name',
+		'value'=>$model->unit->unitName,
+	 ),
+		//'unit_id',
 		'dateTime',
 		'description',
 	),

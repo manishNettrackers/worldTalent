@@ -17,10 +17,18 @@
 	<?php echo CHtml::encode($data->event->eventName); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('category_id')); ?>:</b>
+	<?php echo CHtml::encode($data->category->category); ?>
+	<br />
+    
 	<b><?php echo CHtml::encode($data->getAttributeLabel('score')); ?>:</b>
 	<?php echo CHtml::encode($data->score); ?>
 	<br />
 
+	<b><?php echo CHtml::encode($data->getAttributeLabel('unit_id')); ?>:</b>
+	<?php echo CHtml::encode($data->unit->unitName); ?>
+	<br />
+    
 	<b><?php echo CHtml::encode($data->getAttributeLabel('dateTime')); ?>:</b>
 	<?php echo CHtml::encode($data->dateTime); ?>
 	<br />

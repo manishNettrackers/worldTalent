@@ -6,7 +6,7 @@ class UserController extends Controller
 	 * @var CActiveRecord the currently loaded data model instance.
 	 */
 	private $_model;
-
+    public $layout='//layouts/mainpage';
 	/**
 	 * @return array action filters
 	 */
@@ -39,6 +39,7 @@ class UserController extends Controller
 	 */
 	public function actionView()
 	{
+		$this->layout='//layouts/mainpage';
 		$model = $this->loadModel();
 		$this->render('view',array(
 			'model'=>$model,
@@ -50,7 +51,7 @@ class UserController extends Controller
 	 */
 	public function actionIndex()
 	{
-		$dataProvider=new CActiveDataProvider('User', array(
+		/*$dataProvider=new CActiveDataProvider('profiles', array(
 			'criteria'=>array(
 		        'condition'=>'status>'.User::STATUS_BANNED,
 		    ),
@@ -58,11 +59,9 @@ class UserController extends Controller
 			'pagination'=>array(
 				'pageSize'=>Yii::app()->controller->module->user_page_size,
 			),
-		));
-
-		$this->render('index',array(
-			'dataProvider'=>$dataProvider,
-		));
+		));*/
+ 	$profiles=Yii::app()->db->createCommand("select * from profiles")->queryAll();
+		$this->render('index',array('profiles'=>$profiles));
 	}
 
 	/**

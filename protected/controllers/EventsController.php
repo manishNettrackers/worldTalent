@@ -6,7 +6,7 @@ class EventsController extends Controller
 	 * @var string the default layout for the views. Defaults to '//layouts/column2', meaning
 	 * using two-column layout. See 'protected/views/layouts/column2.php'.
 	 */
-	public $layout='//layouts/column2';
+	public $layout='//layouts/mainpage';
 
 	/**
 	 * @return array action filters
@@ -28,15 +28,15 @@ class EventsController extends Controller
 	{
 		return array(
 			array('allow',  // allow all users to perform 'index' and 'view' actions
-				'actions'=>array('index','view'),
+				'actions'=>array('index','view','dynamiccategory','Viewevent'),
 				'users'=>array('*'),
 			),
 			array('allow', // allow authenticated user to perform 'create' and 'update' actions
-				'actions'=>array('create','update'),
+				'actions'=>array('create','update','dynamiccategory','Viewevent'),
 				'users'=>array('@'),
 			),
 			array('allow', // allow admin user to perform 'admin' and 'delete' actions
-				'actions'=>array('admin','delete'),
+				'actions'=>array('admin','delete','dynamiccategory','Viewevent'),
 				'users'=>array('admin'),
 			),
 			array('deny',  // deny all users
@@ -45,6 +45,63 @@ class EventsController extends Controller
 		);
 	}
 
+  public function actionDynamiccategory()
+	{ 
+		$data=Categories::model()->findAll('sports_id=:sports_id',
+             array(':sports_id'=>(int) $_REQUEST['sportsval']));
+
+             $data=CHtml::listData($data,'id','category');
+			 $content='';
+              foreach($data as $value=>$subcategory)
+                {
+                    $content.=CHtml::tag('option',array('value'=>$value),CHtml::encode($subcategory),true);
+                }
+		$returnarr=array('data'=>$content);		
+		die(json_encode($returnarr));		
+
+	}
+
+	/*public function actionEventunit($value='')
+		{
+			if($value=='' && $_REQUEST['eventval']!='')
+				$value=$_REQUEST['eventval'];
+			$unit=Yii::app()->db->createCommand("select unitName from units u left join events e on u.id=e.unitid where e.id ='".$value."' ")->queryRow();
+			echo $unit['unitName'];
+		}
+	public function actionDynamiccategory()
+	{ //echo $_POST['Events']['sports_id'];die;
+		$data=Categories::model()->findAll('sports_id=:sports_id',
+             array(':sports_id'=>(int) $_POST['Events']['sports_id']));
+
+             $data=CHtml::listData($data,'id','category');
+              foreach($data as $value=>$subcategory)
+                {
+                    echo CHtml::tag('option',array('value'=>$value),CHtml::encode($subcategory),true);
+                }
+	}*/
+	public function actionViewevent($id)
+	{
+		
+		/*$criteria->compare('id',$this->id);
+		$criteria->compare('user_id',$this->user_id);
+		$criteria->compare('event_id',$id);
+		$criteria->compare('unit_id',$this->unit_id);
+		$criteria->compare('category_id',$this->category_id);
+		$criteria->compare('score',$this->score,true);
+		$criteria->compare('dateTime',$this->dateTime,true);
+		$criteria->compare('description',$this->description,true);*/
+		$model=new Events('scoresearch');
+		//$model->unsetAttributes();  // clear any default values
+		//if(isset($_GET['Events']))
+			//$model->attributes=$_GET['Events'];
+
+		$event_details=Yii::app()->db->createCommand("select `s`.`SportName` as `SportName`,`c`.`category` as `category`,`e`.`eventName`,`u`.`unitName` as `unitName`,`e`.`description` from `events` `e` left join `sport` `s` on `s`.`id`=`e`.`sports_id` left join `units` `u` on `u`.`id`=`e`.`unitid` left join `categories` `c` on `c`.`id`=`e`.`category_id` where `e`.`id`='".$id."'")->queryRow();
+		
+		$event_users=Yii::app()->db->createCommand("select AVG(`s`.`score`) as `Avarage Sore`, `e`.`eventName` as `event`,`c`.`category` as `category` ,`s`.`score`,`s`.`dateTime`,`u`.`username` as `username` from `scores` `s` left join `users` `u` on `u`.`id`=`s`.`user_id` left join `categories` `c` on `c`.`id`=`s`.`category_id` left join `events` `e` on `e`.`id`=`s`.`event_id` where `s`.`event_id`='".$id."' group by `s`.`user_id` order by `Avarage Sore` ASC")->queryAll();
+		$this->render('viewevent',array(
+			'event_details'=>$event_details,'model'=>$model,'event_users'=>$event_users
+		));
+	}
 	/**
 	 * Displays a particular model.
 	 * @param integer $id the ID of the model to be displayed
@@ -71,7 +128,11 @@ class EventsController extends Controller
 		{
 			$model->attributes=$_POST['Events'];
 			if($model->save())
+			{
+				$model->description=$_POST['Events']['description'];
+				$model->save();
 				$this->redirect(array('view','id'=>$model->id));
+			}
 		}
 
 		$this->render('create',array(
