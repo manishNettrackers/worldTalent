@@ -14,11 +14,17 @@ class ProfileController extends Controller
 	 */
 	public function actionProfile()
 	{
+		if(!Yii::app()->user->id)
+		 {
+			 $this->redirect(Yii::app()->user->loginUrl);
+		 }else{
+			 $Profile_image = Gallery::model()->findbyAttributes(array('userid'=>Yii::app()->user->id));
 		$model = $this->loadUser();
 	    $this->render('profile',array(
 	    	'model'=>$model,
-			'profile'=>$model->profile,
+			'profile'=>$model->profile,'Profile_image'=>$Profile_image
 	    ));
+		 }
 	}
 
 
@@ -28,16 +34,39 @@ class ProfileController extends Controller
 	 */
 	public function actionEdit()
 	{
+		if(!Yii::app()->user->id)
+		 {
+			 $this->redirect(Yii::app()->user->loginUrl);
+		 }else{
 		$model = $this->loadUser();
 		$profile=$model->profile;
-		//echo '<pre>';print_r($_POST['Profile']);die;
+		$gallerymodel=new Gallery;
 		// ajax validator
 		if(isset($_POST['ajax']) && $_POST['ajax']==='profile-form')
 		{
 			echo UActiveForm::validate(array($model,$profile));
 			Yii::app()->end();
 		}
-		
+			$Profile_image = Gallery::model()->findbyAttributes(array('userid'=>$model->id));
+			if(!$Profile_image)
+			{
+				$Profile_image = new Gallery;
+				$Profile_image->userid = $model->id;
+			}
+				if(isset($_FILES['Gallery']))
+				{
+					$rnd = rand(0,9999);  
+					
+					$uploadedFile=CUploadedFile::getInstance($Profile_image,'image');
+					$fileName = "{$rnd}-{$uploadedFile}";  // random number + file name
+					$Profile_image->image = $fileName;
+					if($Profile_image->save())
+					{
+						$uploadedFile->saveAs(Yii::app()->basePath.'/../banner/'.$fileName);  
+						// redirect to success page
+					}
+				}
+			
 		if(isset($_POST['User']))
 		{
 			$model->attributes=$_POST['User'];
@@ -69,16 +98,23 @@ class ProfileController extends Controller
 								$this->redirect(array("profile"));
 							}
 					}
+					
+		
 		$this->render('edit',array('passwordmodel'=>$passwordmodel,
 			'model'=>$model,
-			'profile'=>$profile,
+			'profile'=>$profile,'Profile_image'=>$Profile_image
 		));
+		 }
 	}
 	
 	/**
 	 * Change password
 	 */
 	public function actionChangepassword() {
+		if(!Yii::app()->user->id)
+		 {
+			 $this->redirect(Yii::app()->user->loginUrl);
+		 }else{
 		$model = new UserChangePassword;
 		if (Yii::app()->user->id) {
 			
@@ -102,6 +138,7 @@ class ProfileController extends Controller
 			}
 			$this->render('changepassword',array('model'=>$model));
 	    }
+		 }
 	}
 
 	/**

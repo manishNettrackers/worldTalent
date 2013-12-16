@@ -17,7 +17,7 @@ $this->menu=array(
 </div>
 <?php endif; ?>
 
-<div class="col-md-9">
+<div class="col-md-6">
 <div class="tab-content">
     <div id="tab_1-1" class="tab-pane active">
 			
@@ -60,4 +60,17 @@ $this->menu=array(
             </div>
     </div>
 </div>
+</div>
+<div class="col-md-4">
+<label class="control-label">Profile Image:</label>
+    <div class="thumbnail" style="width: 300px;">
+		<?php
+		
+        if($Profile_image->image!=''){ ?>
+        	<img src="<?php echo Yii::app()->request->baseUrl.'/banner/'.$Profile_image->image;?>" alt="">
+        <?php }else {?>
+        	<img src="http://www.placehold.it/310x170/EFEFEF/AAAAAA&amp;text=no+image" alt="">
+        <?php }?>
+    
+    </div>
 </div>

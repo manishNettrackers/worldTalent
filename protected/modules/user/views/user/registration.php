@@ -58,7 +58,29 @@ $this->breadcrumbs=array(
     </div>
 	</div>
     </div>
-	
+    <div class="form-group">
+    <div class="margin-top-10 fileupload fileupload-new" data-provides="fileupload">
+															<div class="input-group input-group-fixed">
+																<span class="input-group-btn">
+																<span class="uneditable-input">
+																<i class="fa fa-file fileupload-exists"></i> 
+																<span class="fileupload-preview"></span>
+																</span>
+																</span>
+																<span class="btn default btn-file">
+																<span class="fileupload-new"><i class="fa fa-paper-clip"></i> Select file</span>
+																<span class="fileupload-exists"><i class="fa fa-undo"></i> Change</span>
+                                                               <?php 
+															   $gallerymodel=new Gallery;
+															   echo $form->labelEx($gallerymodel,'image',array('class'=>"control-label visible-ie8 visible-ie9")); 
+															   echo $form->fileField($gallerymodel,'image',array('class'=>'default'));
+															   echo $form->error($gallerymodel,'image');
+															   ?>
+																</span>
+																<a href="#" class="btn red fileupload-exists" data-dismiss="fileupload"><i class="fa fa-trash-o"></i> Remove</a>
+															</div>
+                                                            </div>
+    
 	<div class="form-group">
 	<?php echo $form->labelEx($model,'email',array('class'=>'control-label visible-ie8 visible-ie9')); ?>
     <div class="input-icon">
@@ -81,7 +103,7 @@ $this->breadcrumbs=array(
 		} elseif ($field->range) {
 			echo $form->dropDownList($profile,$field->varname,Profile::range($field->range));
 		} elseif ($field->field_type=="TEXT") {
-			echo$form->textArea($profile,$field->varname,array('rows'=>6, 'cols'=>50));
+			echo $form->textArea($profile,$field->varname,array('rows'=>6, 'cols'=>50));
 		} else {
 			echo $form->textField($profile,$field->varname,array('size'=>60,'class'=>'form-control','maxlength'=>(($field->field_size)?$field->field_size:255)));
 		}

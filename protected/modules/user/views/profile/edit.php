@@ -102,15 +102,18 @@ $this->menu=array(
                                             <?php $form=$this->beginWidget('CActiveForm', array(
                                                 'id'=>'avater-form',
                                                 'enableAjaxValidation'=>true,
-                                                'clientOptions'=>array(
-                                                    'validateOnSubmit'=>true,
-                                                ),
+												'htmlOptions' => array('enctype'=>'multipart/form-data'),
                                             )); ?>
 												<p>Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid. 3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod.</p>
-												<form action="#" role="form">
 													<div class="form-group">
 														<div class="thumbnail" style="width: 310px;">
-															<img src="http://www.placehold.it/310x170/EFEFEF/AAAAAA&amp;text=no+image" alt="">
+                                                        <?php
+                                                        if($Profile_image->image!=''){ ?>
+															<img src="<?php echo Yii::app()->request->baseUrl.'/banner/'.$Profile_image->image;?>" alt="">
+														 <?php }else {?>
+														<img src="http://www.placehold.it/310x170/EFEFEF/AAAAAA&amp;text=no+image" alt="">
+														<?php }?>
+															
 														</div>
 														<div class="margin-top-10 fileupload fileupload-new" data-provides="fileupload">
 															<div class="input-group input-group-fixed">
@@ -123,7 +126,12 @@ $this->menu=array(
 																<span class="btn default btn-file">
 																<span class="fileupload-new"><i class="fa fa-paper-clip"></i> Select file</span>
 																<span class="fileupload-exists"><i class="fa fa-undo"></i> Change</span>
-																<input type="file" class="default" />
+																<?php 
+															   $gallerymodel=new Gallery;
+															   echo $form->labelEx($gallerymodel,'image',array('class'=>"control-label visible-ie8 visible-ie9")); 
+															   echo $form->fileField($gallerymodel,'image',array('class'=>'default'));
+															   echo $form->error($gallerymodel,'image');
+															   ?>
 																</span>
 																<a href="#" class="btn red fileupload-exists" data-dismiss="fileupload"><i class="fa fa-trash-o"></i> Remove</a>
 															</div>
@@ -136,10 +144,9 @@ $this->menu=array(
 														</span>
 													</div>
 													<div class="margin-top-10">
-														<a href="#" class="btn green">Submit</a>
-														<a href="#" class="btn default">Cancel</a>
+                                                    <?php echo CHtml::submitButton($model->isNewRecord ? UserModule::t('Create') : UserModule::t('Save'),array('class'=>"btn green")); ?>
 													</div>
-												</form>
+												 <?php $this->endWidget(); ?>
 											</div>
 											<div id="tab_3-3" class="tab-pane">
                                             <?php $form=$this->beginWidget('CActiveForm', array(

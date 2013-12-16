@@ -21,13 +21,11 @@ class DefaultController extends Controller
 			 $this->redirect(Yii::app()->user->loginUrl);
 		 }else{
 				$profiles=Yii::app()->db->createCommand("select * from profiles")->queryAll();
-				
 				foreach($profiles as $profilesval)
 				{
-					
-					$Profile_image[$profilesval['user_id']] = Gallery::model()->findbyAttributes(array('userid'=> $profilesval['user_id']));
+							$Profile_image[$profilesval['user_id']] = Gallery::model()->findbyAttributes(array('userid'=> $profilesval['user_id']));
 				}				
-				$this->render('/user/index',array('profiles'=>$profiles,'Profile_image123'=>$Profile_image));
+				$this->render('/user/index',array('profiles'=>$profiles,'Profile_image'=>$Profile_image));
 		 }
 	}
 

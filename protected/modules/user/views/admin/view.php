@@ -3,7 +3,7 @@ $this->breadcrumbs=array(
 	UserModule::t('Users')=>array('admin'),
 	$model->username,
 );
-$profilesDeatils=Yii::app()->db->createCommand("select lastname,firstname,birthdate,height,weight,foot from profiles  where user_id='".$_REQUEST['id']."'")->queryRow();
+
 ?>
 
 <div class="row thumbnails">
@@ -14,16 +14,11 @@ $profilesDeatils=Yii::app()->db->createCommand("select lastname,firstname,birthd
       <div class="col-md-6">
 <div class="tab-content">
     <div id="tab_1-1" class="tab-pane active">
-			<?php
-			$userDeatils=Yii::app()->db->createCommand("select * from users  where id='".$_REQUEST['id']."'")->queryRow();
-			?>
             <div class="form-group">
                <label class="control-label">User Name</label>
                 <input type="text" class="form-control" value="<?php echo $userDeatils['username']?>"  disabled="disabled" />
             </div>
             <?php 
-			$profilesDeatils=Yii::app()->db->createCommand("select lastname,firstname,birthdate,height,weight,foot from profiles  where user_id='".$_REQUEST['id']."'")->queryRow();
-			
                 $profileFields=ProfileField::model()->forOwner()->sort()->findAll();
 				
                 if ($profilesDeatils) {
@@ -57,6 +52,20 @@ $profilesDeatils=Yii::app()->db->createCommand("select lastname,firstname,birthd
             </div>
     </div>
 </div>
+</div>
+
+<div class="col-md-4">
+<label class="control-label">Profile Image:</label>
+    <div class="thumbnail" style="width: 300px;">
+		<?php
+		
+        if($Profile_image->image!=''){ ?>
+        	<img src="<?php echo Yii::app()->request->baseUrl.'/banner/'.$Profile_image->image;?>" alt="">
+        <?php }else {?>
+        	<img src="http://www.placehold.it/310x170/EFEFEF/AAAAAA&amp;text=no+image" alt="">
+        <?php }?>
+    
+    </div>
 </div>
       <ul class="social-icons pull-right">
         <li><a href="#" data-original-title="twitter" class="twitter"></a></li>

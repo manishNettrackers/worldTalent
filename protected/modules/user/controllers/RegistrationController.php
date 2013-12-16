@@ -49,8 +49,7 @@ class RegistrationController extends Controller
 						$model->status=((Yii::app()->controller->module->activeAfterRegister)?User::STATUS_ACTIVE:User::STATUS_NOACTIVE);
 						
 						if ($model->save()) {
-							
-							if(isset($_POST['Gallery']))
+							if(isset($_FILES['Gallery']))
 							{
 								$gallerymodel = new Gallery;
 								$rnd = rand(0,9999);  
@@ -61,7 +60,7 @@ class RegistrationController extends Controller
 								$gallerymodel->image = $fileName;
 								if($gallerymodel->save())
 								{
-   										$uploadedFile->saveAs(Yii::app()->basePath.'/banner/'.$fileName);  
+   										$uploadedFile->saveAs(Yii::app()->basePath.'/../banner/'.$fileName);  
 									// redirect to success page
 								}
 							}

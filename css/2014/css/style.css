@@ -4033,6 +4033,7 @@ Responsive & Scrollable Tables
 h1.event_list_block { font-size:20px; padding:5px 0 5px 14px; display:block; margin:5px 0 5px 14px; background:#555555; color:#ffffff; }
 .update_event .dashboard-stat .more{ height:63px;}
 .dashboard-stat .visual span.football{ background:url(../../../images/football_logo.png) no-repeat; display:block; width:68px; height:69px;}
+.login .content.reg{ width:477px;}
 /***
 Responsive Flip Scroll Tables
 ***/

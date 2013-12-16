@@ -42,6 +42,10 @@ class AdminController extends Controller
 	 */
 	public function actionAdmin()
 	{
+		if(!Yii::app()->user->id)
+		 {
+			 $this->redirect(Yii::app()->user->loginUrl);
+		 }else{
 		$model=new User('search');
         $model->unsetAttributes();  // clear any default values
         if(isset($_GET['User']))
@@ -50,6 +54,7 @@ class AdminController extends Controller
         $this->render('index',array(
             'model'=>$model,
         ));
+		 }
 		/*$dataProvider=new CActiveDataProvider('User', array(
 			'pagination'=>array(
 				'pageSize'=>Yii::app()->controller->module->user_page_size,
@@ -67,6 +72,10 @@ class AdminController extends Controller
 	 */
 	public function actionView()
 	{
+		if(!Yii::app()->user->id)
+		 {
+			 $this->redirect(Yii::app()->user->loginUrl);
+		 }else{
 		$model = $this->loadUser();
 		$totalevent=array();
 		$CatrgoryDetails=Yii::app()->db->createCommand("select c.category as category ,s.* from scores s left join categories c on c.id=s.category_id where user_id='".$_REQUEST['id']."' group by category_id")->queryAll();
@@ -86,9 +95,13 @@ class AdminController extends Controller
 				);
 			}
 		}
-		//echo '<pre>';print_r($totalevent);die;
-		//$model = $this->loadModel();
-		$this->render('view',array('model'=>$model,'totalevent'=>$totalevent,'CatrgoryDetails'=>$CatrgoryDetails));
+		 $Profile_image = Gallery::model()->findbyAttributes(array('userid'=>$_REQUEST['id']));
+		$profilesDeatils=Yii::app()->db->createCommand("select lastname,firstname,birthdate,height,weight,foot from profiles  where user_id='".$_REQUEST['id']."'")->queryRow();
+		
+		$userDeatils=Yii::app()->db->createCommand("select * from users  where id='".$_REQUEST['id']."'")->queryRow();
+		
+		$this->render('view',array('model'=>$model,'totalevent'=>$totalevent,'CatrgoryDetails'=>$CatrgoryDetails,'profilesDeatils'=>$profilesDeatils,'userDeatils'=>$userDeatils,'Profile_image'=>$Profile_image));
+		 }
 	}
 
 	/**
@@ -97,6 +110,10 @@ class AdminController extends Controller
 	 */
 	public function actionCreate()
 	{
+		if(!Yii::app()->user->id)
+		 {
+			 $this->redirect(Yii::app()->user->loginUrl);
+		 }else{
 		$model=new User;
 		$profile=new Profile;
 		$this->performAjaxValidation(array($model,$profile));
@@ -120,6 +137,7 @@ class AdminController extends Controller
 			'model'=>$model,
 			'profile'=>$profile,
 		));
+		 }
 	}
 
 	/**
@@ -128,6 +146,10 @@ class AdminController extends Controller
 	 */
 	public function actionUpdate()
 	{
+		if(!Yii::app()->user->id)
+		 {
+			 $this->redirect(Yii::app()->user->loginUrl);
+		 }else{
 		$model=$this->loadModel();
 		$profile=$model->profile;
 		$this->performAjaxValidation(array($model,$profile));
@@ -152,6 +174,7 @@ class AdminController extends Controller
 			'model'=>$model,
 			'profile'=>$profile,
 		));
+		 }
 	}
 
 

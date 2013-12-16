@@ -77,7 +77,15 @@ Purchase: http://themeforest.net/item/metronic-responsive-admin-dashboard-templa
 				<!-- BEGIN USER LOGIN DROPDOWN -->
 				<li class="dropdown user">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown" data-hover="dropdown" data-close-others="true">
-					<img alt="" src="<?php echo Yii::app()->request->baseUrl; ?>/css/2014/img/avatar1_small.jpg"/>
+                    <?php
+					$Profile_image = Gallery::model()->findbyAttributes(array('userid'=>Yii::app()->user->id));
+
+					if($Profile_image->image!=''){ ?>
+						<img src="<?php echo Yii::app()->request->baseUrl.'/banner/'.$Profile_image->image;?>" alt="" width="47px" height="36px">
+					<?php }else {?>
+						<img src="http://www.placehold.it/310x170/EFEFEF/AAAAAA&amp;text=no+image" alt="">
+					<?php }?>
+					<!--<img alt="" src="<?php echo Yii::app()->request->baseUrl; ?>/css/2014/img/avatar1_small.jpg"/>-->
 					<span class="username"><?php echo Yii::app()->user->name?></span>
 					<i class="fa fa-angle-down"></i>
 					</a>

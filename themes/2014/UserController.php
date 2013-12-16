@@ -59,9 +59,7 @@ class UserController extends Controller
 				foreach($profiles as $profilesval)
 				{
 							$Profile_image[$profilesval['user_id']] = Gallery::model()->findbyAttributes(array('userid'=> $profilesval['user_id']));
-							
 				}
-				
 				$this->render('index',array('profiles'=>$profiles,'Profile_image'=>$Profile_image));
 		 }
 	}
